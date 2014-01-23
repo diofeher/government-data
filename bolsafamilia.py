@@ -1,3 +1,7 @@
+# !/usr/bin/python
+# -*- coding: latin-1 -*-
+__author__ = 'Diógenes Augusto Fernandes Hermínio'
+__version__ = 0.1
 import operator
 import csv
 cities = {}

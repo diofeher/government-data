@@ -1,0 +1,115 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Porcentagem de beneficiários/população</title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/highcharts/3.0.7/highcharts.js"></script>
+        <script src="http://code.highcharts.com/modules/drilldown.js"></script>
+        
+		<script type="text/javascript">
+$(function () {
+var POPULATION = {
+    'BA':15044137, 'DF':2789761, 'PR':10997465, 'RR':488072, 'RS':11164043, 'PB':3914421, 'TO':1478164, 'PA': 7969654, 'PE':9208550, 'RN':3373959, 'PI':3184166, 'RJ':16369179, 'AC':776463, 'AM':3807921, 'AL':3300935, 'CE': 8778576, 'AP':734996, 'GO':6434048, 'ES':3839366, 'MG': 20593356, 'RO': 1728214, 'MA':6794301, 'SP': 43663669, 'MT':3182113, 'MS':2587269, 'SC':6634254, 'SE':2195662
+}
+var DATA = {
+'11/13': { 'BA': 1795479, 'SP': 1348670, 'MG': 1171223, 'PE': 1144723, 'CE': 1094049, 'MA': 963382, 'PA': 843135, 'RJ': 834939, 'PB': 504597, 'RS': 450805, 'PI': 450144, 'AL': 438191, 'PR': 426010, 'RN': 360193, 'AM': 345445, 'GO': 338285, 'SE': 272264, 'ES': 196854, 'MT': 184355, 'SC': 142795, 'MS': 141766, 'TO': 137860, 'RO': 117081, 'DF': 88550, 'AC': 74801, 'AP': 53741, 'RR': 46785 }
+}
+var statesData = [],
+    lst = {},
+    popData = [],
+    benData = [],
+    categories = [];
+$.each(DATA['11/13'], function (name, value) {
+    lst[name] = []
+    popData.push({
+        name: name,
+        y: POPULATION[name]
+    });
+    benData.push({
+        name: name,
+        y: value
+    });
+    categories.push(name);
+});
+$.each(DATA, function (month, data_list) {
+    $.each(data_list, function (state, value) {
+        lst[state].push([month, value]);
+    });
+});
+
+// Create the chart
+$('#container').highcharts({
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Porcentagem de beneficiários/população'
+    },
+    subtitle: {
+        text: 'Posicione o mouse nas colunas para ver as porcentagens'
+    },
+    xAxis: {
+        type: 'category',
+        categories: categories
+    },
+    yAxis: {
+        title: {
+            text: 'Número de beneficiários/população'
+        },
+        max:45000000,
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            stacking: 'normal',
+            dataLabels: {
+                verticalAlign: 'top',
+                y: -20,
+                enabled: true,
+                formatter: function() {
+                    y = this.y.toString();
+                    if(y>=1000000) {
+                        return y.substring(0, y.length -6)+'.'+ y.substring(y.length-6, y.length -5)+'mi';
+                    }
+                    return y.substring(0, y.length -3)+'k';
+                }
+            }
+        }
+    },
+
+    tooltip: {
+        shared: true,
+        formatter: function() {
+            var percentage = (this.points[1].y / this.points[0].y) * 100
+            var text = '<span style="color:{point.color}"></span>'+this.points[0].key+'<br/><span style="color:{point.color}">População</span>: <b>'+ this.points[0].y + '</b><br/><span style="color:{point.color}">Beneficiários:</span><b>' + this.points[1].y + '</b><br/><span style="color:{point.color}">Porcentagem:</span><b>' + percentage.toFixed(2) + '%</b>';
+            console.log()
+            return text;
+        }
+    }, 
+
+    series: [
+    {
+        name: 'População',
+        color: 'yellow',
+        data: popData
+    },
+    {
+        name: 'Beneficiários',
+        color: 'lime',
+        data: benData
+    }
+    ]
+});
+});
+</script>
+</head>
+<body>
+    <div id="container" style="min-width: 310px; height: 500px; margin: 0 auto">
+    </div>
+</body>
+</html>
